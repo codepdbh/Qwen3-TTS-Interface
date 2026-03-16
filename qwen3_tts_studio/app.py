@@ -1,7 +1,8 @@
 import gradio as gr
 
-from core.constants import APP_MODES_MARKDOWN, CPU_WARNING_MARKDOWN, CSS_PATH, NOTES_MARKDOWN, SETTINGS_PATH
+from core.constants import CSS_PATH, SETTINGS_PATH
 from services.tts_service import TTSService
+from ui.components import app_header_html, footer_notes_html, tips_card_html
 from ui.tabs_clone import build_clone_tab
 from ui.tabs_generate import build_generate_tab
 from ui.tabs_history import build_history_tab
@@ -19,25 +20,37 @@ def create_app() -> tuple[gr.Blocks, dict]:
     tts_service = TTSService(SETTINGS_PATH)
     settings = tts_service.get_settings_summary()
     css = load_css()
+    theme = gr.themes.Base(
+        primary_hue=gr.themes.colors.emerald,
+        neutral_hue=gr.themes.colors.slate,
+        font=["Segoe UI", "Trebuchet MS", "sans-serif"],
+        font_mono=["Consolas", "Courier New", "monospace"],
+    )
 
-    with gr.Blocks(title=settings.get("app_name", "Qwen3 TTS Studio"), css=css, theme=gr.themes.Soft()) as demo:
-        gr.Markdown(
-            """
-            # Qwen3 TTS Studio
-            Interfaz local en Gradio para trabajar con Qwen3-TTS en Windows usando CPU.
-            """
+    with gr.Blocks(title=settings.get("app_name", "Qwen3 TTS Studio"), css=css, theme=theme) as demo:
+        gr.HTML(app_header_html())
+        gr.HTML(
+            tips_card_html(
+                "Notas importantes",
+                [
+                    "VoiceDesign disena una voz desde texto descriptivo.",
+                    "Base permite clonacion desde audio.",
+                    "El modo hibrido combina ambos enfoques.",
+                    "En CPU la primera carga y la sintesis pueden tardar bastante.",
+                    "Audios de referencia limpios suelen dar mejores resultados.",
+                ],
+            ),
+            elem_classes=["top-note-strip"],
         )
-        gr.Markdown(APP_MODES_MARKDOWN)
-        gr.Markdown(CPU_WARNING_MARKDOWN)
 
-        with gr.Tabs():
+        with gr.Tabs(elem_classes=["studio-tabs"]):
             build_generate_tab(tts_service)
             build_clone_tab(tts_service)
             build_hybrid_tab(tts_service)
             build_history_tab(tts_service)
             build_settings_tab(tts_service)
 
-        gr.Markdown(NOTES_MARKDOWN)
+        gr.HTML(footer_notes_html())
 
     return demo, settings
 

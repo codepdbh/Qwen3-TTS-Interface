@@ -5,6 +5,81 @@ def info_box_markdown(title: str, body: str) -> str:
     return f"### {title}\n\n{body}"
 
 
+def app_header_html() -> str:
+    return """
+<section class="hero-banner">
+  <div class="hero-copy">
+    <div class="hero-kicker">Qwen3 TTS Studio</div>
+    <h1>Estudio local para disenar, clonar y refinar voces con Qwen3-TTS</h1>
+    <p>Interfaz en espanol, pensada para Windows 10/11 y ejecucion en CPU. La primera carga puede tardar, pero despues puedes reutilizar modelos y audios generados desde una sola app.</p>
+    <div class="hero-chips">
+      <span>VoiceDesign</span>
+      <span>Base</span>
+      <span>Flujo hibrido</span>
+      <span>Historial local</span>
+    </div>
+  </div>
+  <div class="hero-grid">
+    <div class="hero-card">
+      <div class="hero-card-title">Diseno de voz</div>
+      <p>Crea una identidad vocal a partir de una descripcion textual.</p>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-title">Clonacion</div>
+      <p>Usa un audio de referencia y, si quieres, su transcripcion.</p>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-title">CPU primero</div>
+      <p>Carga diferida de modelos y uso local sin depender de GPU NVIDIA.</p>
+    </div>
+  </div>
+</section>
+"""
+
+
+def tab_header_html(kicker: str, title: str, description: str) -> str:
+    return f"""
+<section class="tab-intro-card">
+  <div class="tab-intro-kicker">{kicker}</div>
+  <h2>{title}</h2>
+  <p>{description}</p>
+</section>
+"""
+
+
+def tips_card_html(title: str, items: list[str]) -> str:
+    list_items = "".join(f"<li>{item}</li>" for item in items)
+    return f"""
+<section class="tips-card">
+  <div class="tips-card-title">{title}</div>
+  <ul>{list_items}</ul>
+</section>
+"""
+
+
+def footer_notes_html() -> str:
+    return """
+<section class="footer-notes">
+  <div class="footer-note">
+    <div class="footer-note-title">VoiceDesign</div>
+    <p>Disena una voz desde una descripcion textual.</p>
+  </div>
+  <div class="footer-note">
+    <div class="footer-note-title">Base</div>
+    <p>Clona una voz a partir de un audio limpio de referencia.</p>
+  </div>
+  <div class="footer-note">
+    <div class="footer-note-title">Modo hibrido</div>
+    <p>Genera una voz semilla y la convierte en prompt reutilizable.</p>
+  </div>
+  <div class="footer-note">
+    <div class="footer-note-title">CPU</div>
+    <p>La generacion puede tardar bastante; los modelos se cargan solo cuando hacen falta.</p>
+  </div>
+</section>
+"""
+
+
 def build_history_selector_label(record: dict[str, Any]) -> str:
     return f"{record.get('id', '')} | {record.get('fecha_hora', '')} | {record.get('modo', '')}"
 

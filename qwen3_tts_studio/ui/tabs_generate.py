@@ -1,6 +1,7 @@
 import gradio as gr
 
 from core.constants import SUPPORTED_LANGUAGES, UI_HELP_TEXTS, VOICE_PROMPT_EXAMPLES
+from ui.components import tab_header_html, tips_card_html
 
 
 def build_generate_tab(tts_service) -> None:
@@ -8,14 +9,16 @@ def build_generate_tab(tts_service) -> None:
         yield from _run_design_generator(text, language, voice_prompt, tts_service)
 
     with gr.Tab("Diseno de voz"):
-        gr.Markdown(
-            """
-            Genera una voz nueva a partir de una descripcion escrita. Usa el modelo `Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign`.
-            """
+        gr.HTML(
+            tab_header_html(
+                "Modo VoiceDesign",
+                "Disena una voz desde una descripcion escrita",
+                "Usa el modelo Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign para crear una voz nueva a partir de estilo, tono y personalidad.",
+            )
         )
 
-        with gr.Row():
-            with gr.Column(scale=2):
+        with gr.Row(elem_classes=["studio-workspace"]):
+            with gr.Column(scale=2, elem_classes=["studio-panel", "studio-panel-main"]):
                 text_input = gr.Textbox(
                     label="Texto a sintetizar",
                     lines=8,
@@ -39,15 +42,16 @@ def build_generate_tab(tts_service) -> None:
                 apply_preset_button = gr.Button("Usar ejemplo", variant="secondary")
                 generate_button = gr.Button("Generar", variant="primary")
 
-            with gr.Column(scale=1):
-                gr.Markdown(
-                    """
-                    **Ejemplos de descripcion**
-
-                    - Voz femenina calida, pausada, tono narrativo, acento latino neutro
-                    - Voz masculina grave, segura, formal, ritmo medio
-                    - Voz juvenil alegre, clara, natural
-                    """
+            with gr.Column(scale=1, elem_classes=["studio-panel", "studio-panel-side"]):
+                gr.HTML(
+                    tips_card_html(
+                        "Ejemplos de descripcion",
+                        [
+                            "Voz femenina calida, pausada, tono narrativo, acento latino neutro",
+                            "Voz masculina grave, segura, formal, ritmo medio",
+                            "Voz juvenil alegre, clara, natural",
+                        ],
+                    )
                 )
                 status_output = gr.Textbox(label="Estado del proceso", lines=4, interactive=False)
                 audio_output = gr.Audio(label="Audio generado", type="filepath")

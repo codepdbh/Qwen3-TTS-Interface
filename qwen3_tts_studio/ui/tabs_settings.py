@@ -1,6 +1,6 @@
 import gradio as gr
 
-from ui.components import info_box_markdown, render_model_progress_html
+from ui.components import render_model_progress_html, tab_header_html, tips_card_html
 
 
 def build_settings_tab(tts_service) -> None:
@@ -11,33 +11,49 @@ def build_settings_tab(tts_service) -> None:
         yield from _download_models_generator(tts_service, force_download=True)
 
     with gr.Tab("Configuracion"):
-        gr.Markdown(
-            info_box_markdown(
-                "Informacion del entorno",
-                "Esta vista muestra el dispositivo actual, los modelos configurados y el estado de carga en memoria.",
+        gr.HTML(
+            tab_header_html(
+                "Entorno y modelos",
+                "Configura, descarga y verifica el estado local",
+                "Desde aqui puedes confirmar el dispositivo actual, revisar rutas y descargar copias persistentes de los modelos para no repetir la descarga en futuros arranques.",
             )
         )
 
-        progress_html = gr.HTML(
-            value=render_model_progress_html(
-                tts_service.get_model_status(),
-                note="Si descargas los modelos una vez, la app intentara reutilizar esas copias locales despues.",
-            )
-        )
-        settings_json = gr.JSON(label="Configuracion actual", value=tts_service.get_settings_summary())
-        model_status_json = gr.JSON(label="Estado de modelos", value=tts_service.get_model_status())
-        status_output = gr.Textbox(
-            label="Estado",
-            interactive=False,
-            value="Configuracion cargada. Puedes descargar los modelos una sola vez y quedaran guardados localmente.",
-        )
+        with gr.Row(elem_classes=["studio-workspace"]):
+            with gr.Column(scale=1, elem_classes=["studio-panel", "studio-panel-side"]):
+                progress_html = gr.HTML(
+                    value=render_model_progress_html(
+                        tts_service.get_model_status(),
+                        note="Si descargas los modelos una vez, la app intentara reutilizar esas copias locales despues.",
+                    )
+                )
+                gr.HTML(
+                    tips_card_html(
+                        "Que puedes hacer aqui",
+                        [
+                            "Descargar una copia local persistente de VoiceDesign y Base.",
+                            "Actualizar el estado sin recargar toda la app.",
+                            "Descargar modelos de memoria sin borrar los archivos del disco.",
+                        ],
+                    )
+                )
+                status_output = gr.Textbox(
+                    label="Estado",
+                    interactive=False,
+                    value="Configuracion cargada. Puedes descargar los modelos una sola vez y quedaran guardados localmente.",
+                )
 
-        with gr.Row():
-            reload_button = gr.Button("Recargar configuracion", variant="secondary")
-            unload_button = gr.Button("Desalojar modelos", variant="secondary")
-            refresh_button = gr.Button("Actualizar estado", variant="primary")
-            download_button = gr.Button("Descargar modelos", variant="primary")
-            force_download_button = gr.Button("Forzar actualizacion", variant="secondary")
+                with gr.Row():
+                    reload_button = gr.Button("Recargar configuracion", variant="secondary")
+                    unload_button = gr.Button("Desalojar modelos", variant="secondary")
+                    refresh_button = gr.Button("Actualizar estado", variant="primary")
+                with gr.Row():
+                    download_button = gr.Button("Descargar modelos", variant="primary")
+                    force_download_button = gr.Button("Forzar actualizacion", variant="secondary")
+
+            with gr.Column(scale=1, elem_classes=["studio-panel", "studio-panel-main"]):
+                settings_json = gr.JSON(label="Configuracion actual", value=tts_service.get_settings_summary())
+                model_status_json = gr.JSON(label="Estado de modelos", value=tts_service.get_model_status())
 
         reload_button.click(
             fn=lambda service=tts_service: _reload_settings(service),

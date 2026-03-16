@@ -1,6 +1,7 @@
 import gradio as gr
 
 from core.constants import SUPPORTED_LANGUAGES, UI_HELP_TEXTS
+from ui.components import tab_header_html, tips_card_html
 
 
 def build_clone_tab(tts_service) -> None:
@@ -8,14 +9,16 @@ def build_clone_tab(tts_service) -> None:
         yield from _run_clone_generator(text, language, reference_audio, reference_text, tts_service)
 
     with gr.Tab("Clonacion de voz"):
-        gr.Markdown(
-            """
-            Clona una voz a partir de un audio de referencia usando `Qwen/Qwen3-TTS-12Hz-1.7B-Base`.
-            """
+        gr.HTML(
+            tab_header_html(
+                "Modo Base",
+                "Clona una voz desde audio de referencia",
+                "Carga un audio claro y, si puedes, su transcripcion. El modelo Base reutiliza ese material para sintetizar nuevo contenido con un timbre parecido.",
+            )
         )
 
-        with gr.Row():
-            with gr.Column(scale=2):
+        with gr.Row(elem_classes=["studio-workspace"]):
+            with gr.Column(scale=2, elem_classes=["studio-panel", "studio-panel-main"]):
                 text_input = gr.Textbox(
                     label="Texto objetivo",
                     lines=8,
@@ -38,9 +41,17 @@ def build_clone_tab(tts_service) -> None:
                 )
                 clone_button = gr.Button("Clonar voz", variant="primary")
 
-            with gr.Column(scale=1):
-                gr.Markdown(f"- {UI_HELP_TEXTS['clone_audio_tip']}")
-                gr.Markdown(f"- {UI_HELP_TEXTS['clone_transcript_tip']}")
+            with gr.Column(scale=1, elem_classes=["studio-panel", "studio-panel-side"]):
+                gr.HTML(
+                    tips_card_html(
+                        "Buenas practicas",
+                        [
+                            UI_HELP_TEXTS["clone_audio_tip"],
+                            UI_HELP_TEXTS["clone_transcript_tip"],
+                            "Si no añades transcripcion, la app usa solo la huella vocal y la calidad puede bajar.",
+                        ],
+                    )
+                )
                 status_output = gr.Textbox(label="Estado del proceso", lines=4, interactive=False)
                 audio_output = gr.Audio(label="Audio clonado", type="filepath")
                 download_output = gr.File(label="Descargar WAV")

@@ -1,6 +1,7 @@
 import gradio as gr
 
 from core.constants import DEFAULT_SEED_TEXT, SUPPORTED_LANGUAGES, UI_HELP_TEXTS
+from ui.components import tab_header_html, tips_card_html
 
 
 def build_hybrid_tab(tts_service) -> None:
@@ -8,14 +9,16 @@ def build_hybrid_tab(tts_service) -> None:
         yield from _run_hybrid_generator(text, language, voice_prompt, seed_text, tts_service)
 
     with gr.Tab("Diseno + Clonacion"):
-        gr.Markdown(
-            """
-            Este modo primero disena una voz, luego reutiliza esa muestra como referencia para la salida final.
-            """
+        gr.HTML(
+            tab_header_html(
+                "Flujo hibrido",
+                "Disena una voz y conviertela en referencia reusable",
+                "Primero se crea un clip semilla con VoiceDesign y luego se usa como prompt para el modelo Base. Es el modo mas flexible, pero tambien el mas lento en CPU.",
+            )
         )
 
-        with gr.Row():
-            with gr.Column(scale=2):
+        with gr.Row(elem_classes=["studio-workspace"]):
+            with gr.Column(scale=2, elem_classes=["studio-panel", "studio-panel-main"]):
                 text_input = gr.Textbox(
                     label="Texto final",
                     lines=8,
@@ -39,8 +42,17 @@ def build_hybrid_tab(tts_service) -> None:
                 )
                 hybrid_button = gr.Button("Generar con flujo hibrido", variant="primary")
 
-            with gr.Column(scale=1):
-                gr.Markdown(UI_HELP_TEXTS["hybrid_tip"])
+            with gr.Column(scale=1, elem_classes=["studio-panel", "studio-panel-side"]):
+                gr.HTML(
+                    tips_card_html(
+                        "Como funciona este modo",
+                        [
+                            "Primero diseña una voz semilla con una descripcion textual.",
+                            "Luego convierte esa semilla en prompt reutilizable de clonacion.",
+                            "Finalmente genera el audio final con el texto objetivo.",
+                        ],
+                    )
+                )
                 status_output = gr.Textbox(label="Estado del proceso", lines=4, interactive=False)
                 seed_audio_output = gr.Audio(label="Audio semilla", type="filepath")
                 final_audio_output = gr.Audio(label="Audio final", type="filepath")

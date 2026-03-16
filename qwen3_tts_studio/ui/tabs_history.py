@@ -2,38 +2,63 @@ from pathlib import Path
 
 import gradio as gr
 
-from ui.components import build_history_selector_label, history_detail_markdown, parse_history_selector_label
+from ui.components import (
+    build_history_selector_label,
+    history_detail_markdown,
+    parse_history_selector_label,
+    tab_header_html,
+    tips_card_html,
+)
 
 
 def build_history_tab(tts_service) -> None:
     with gr.Tab("Historial"):
-        gr.Markdown("Consulta generaciones anteriores, reproduce resultados guardados y limpia registros locales.")
+        gr.HTML(
+            tab_header_html(
+                "Seguimiento local",
+                "Consulta tus generaciones anteriores",
+                "Explora resultados guardados, reproduce audios existentes y limpia el historial local cuando necesites dejar el proyecto ordenado.",
+            )
+        )
 
         records = tts_service.get_history_records()
         selector_choices = [build_history_selector_label(record) for record in records]
 
-        history_table = gr.Dataframe(
-            headers=["ID", "Fecha", "Modo", "Texto", "Archivo generado", "Estado"],
-            value=tts_service.get_history_rows(),
-            interactive=False,
-            wrap=True,
-            label="Registros",
-        )
+        with gr.Row(elem_classes=["studio-workspace"]):
+            with gr.Column(scale=2, elem_classes=["studio-panel", "studio-panel-main"]):
+                history_table = gr.Dataframe(
+                    headers=["ID", "Fecha", "Modo", "Texto", "Archivo generado", "Estado"],
+                    value=tts_service.get_history_rows(),
+                    interactive=False,
+                    wrap=True,
+                    label="Registros",
+                )
 
-        with gr.Row():
-            selector = gr.Dropdown(
-                choices=selector_choices,
-                label="Seleccionar registro",
-                value=selector_choices[0] if selector_choices else None,
-            )
-            refresh_button = gr.Button("Refrescar", variant="secondary")
-            delete_button = gr.Button("Borrar item", variant="secondary")
-            clear_button = gr.Button("Limpiar historial", variant="stop")
+                with gr.Row():
+                    selector = gr.Dropdown(
+                        choices=selector_choices,
+                        label="Seleccionar registro",
+                        value=selector_choices[0] if selector_choices else None,
+                    )
+                    refresh_button = gr.Button("Refrescar", variant="secondary")
+                    delete_button = gr.Button("Borrar item", variant="secondary")
+                    clear_button = gr.Button("Limpiar historial", variant="stop")
+                status_output = gr.Textbox(label="Estado", interactive=False)
 
-        preview_audio = gr.Audio(label="Reproducir desde historial", type="filepath")
-        preview_path = gr.Textbox(label="Ruta del archivo", interactive=False)
-        detail_markdown = gr.Markdown(history_detail_markdown(records[0] if records else None))
-        status_output = gr.Textbox(label="Estado", interactive=False)
+            with gr.Column(scale=1, elem_classes=["studio-panel", "studio-panel-side"]):
+                gr.HTML(
+                    tips_card_html(
+                        "Sugerencias",
+                        [
+                            "La tabla resume fecha, modo, texto y estado.",
+                            "Si el archivo aun existe, puedes reproducirlo desde aqui.",
+                            "Limpiar historial no borra automaticamente los WAV ya generados.",
+                        ],
+                    )
+                )
+                preview_audio = gr.Audio(label="Reproducir desde historial", type="filepath")
+                preview_path = gr.Textbox(label="Ruta del archivo", interactive=False)
+                detail_markdown = gr.Markdown(history_detail_markdown(records[0] if records else None))
 
         selector.change(
             fn=lambda selected, service=tts_service: _preview_history_item(selected, service),
@@ -115,4 +140,3 @@ def _existing_audio_path(path: str | None) -> str | None:
     if not path:
         return None
     return path if Path(path).exists() else None
-
