@@ -10,6 +10,7 @@ Aplicacion local para Windows 10/11 hecha en Python + Gradio para trabajar con Q
 - Permite subir audio de referencia y transcripcion opcional.
 - Reproduce el audio generado y ofrece descarga del WAV.
 - Guarda un historial local en JSON.
+- Permite guardar voces reutilizables desde audio de referencia o desde una semilla híbrida.
 - Muestra configuracion y estado de modelos cargados.
 - Descarga y conserva copias locales persistentes de los modelos.
 
@@ -78,8 +79,9 @@ Este modo usa `VoiceDesign`, pensado para crear una voz desde una descripcion te
 
 - Escribe el texto objetivo.
 - Selecciona el idioma.
-- Sube un audio de referencia.
+- Elige entre subir un audio nuevo o usar una voz guardada.
 - Si conoces la transcripcion del audio, escribela.
+- Si subes un audio nuevo, puedes guardarlo como voz reusable.
 - Pulsa `Clonar voz`.
 
 Si no proporcionas transcripcion, la app usa `x_vector_only_mode=True`. Eso permite clonar solo con el audio, aunque la calidad puede ser menor que con transcripcion.
@@ -91,6 +93,7 @@ Si no proporcionas transcripcion, la app usa `x_vector_only_mode=True`. Eso perm
 - Describe la voz.
 - Opcionalmente ajusta el texto semilla.
 - Pulsa `Generar con flujo hibrido`.
+- Si te gusta la semilla generada, puedes guardarla como voz reusable.
 
 Este modo:
 
@@ -98,7 +101,13 @@ Este modo:
 - Usa esa semilla para crear un prompt reutilizable de clonacion con `Base`.
 - Produce el audio final con el texto objetivo.
 
-### 4. Historial
+### 4. Voces guardadas
+
+- Muestra la biblioteca local de voces guardadas.
+- Permite previsualizar cada voz.
+- Permite borrar voces que ya no necesites.
+
+### 5. Historial
 
 - Muestra registros previos en una tabla.
 - Permite refrescar.
@@ -106,7 +115,7 @@ Este modo:
 - Permite limpiar todo el historial.
 - Si el archivo sigue existiendo, puedes reproducirlo desde la propia pestana.
 
-### 5. Configuracion
+### 6. Configuracion
 
 - Muestra dispositivo, puerto y rutas.
 - Muestra el estado de modelos cargados.
@@ -129,6 +138,8 @@ Ejemplo:
   "output_dir": "outputs/generated",
   "history_file": "outputs/history/history.json",
   "temp_dir": "outputs/temp",
+  "voices_dir": "outputs/voices",
+  "voices_file": "outputs/voices/voices.json",
   "models_dir": "models",
   "voice_design_local_dir": "models/voice_design",
   "base_local_dir": "models/base",
@@ -232,6 +243,7 @@ qwen3_tts_studio/
     generated/
     history/
     temp/
+    voices/
   assets/
     app.css
 ```

@@ -7,6 +7,7 @@ MODELS_DIR = APP_DIR / "models"
 GENERATED_DIR = OUTPUTS_DIR / "generated"
 HISTORY_DIR = OUTPUTS_DIR / "history"
 TEMP_DIR = OUTPUTS_DIR / "temp"
+VOICES_DIR = OUTPUTS_DIR / "voices"
 ASSETS_DIR = APP_DIR / "assets"
 SETTINGS_PATH = CONFIG_DIR / "settings.json"
 CSS_PATH = ASSETS_DIR / "app.css"
@@ -91,6 +92,8 @@ DEFAULT_SETTINGS = {
     "output_dir": "outputs/generated",
     "history_file": "outputs/history/history.json",
     "temp_dir": "outputs/temp",
+    "voices_dir": "outputs/voices",
+    "voices_file": "outputs/voices/voices.json",
     "models_dir": "models",
     "voice_design_local_dir": "models/voice_design",
     "base_local_dir": "models/base",

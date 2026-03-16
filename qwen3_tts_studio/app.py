@@ -2,12 +2,13 @@ import gradio as gr
 
 from core.constants import CSS_PATH, SETTINGS_PATH
 from services.tts_service import TTSService
-from ui.components import app_header_html, footer_notes_html, tips_card_html
+from ui.components import app_header_html
 from ui.tabs_clone import build_clone_tab
 from ui.tabs_generate import build_generate_tab
 from ui.tabs_history import build_history_tab
 from ui.tabs_hybrid import build_hybrid_tab
 from ui.tabs_settings import build_settings_tab
+from ui.tabs_voices import build_voices_tab
 
 
 def load_css() -> str:
@@ -29,28 +30,14 @@ def create_app() -> tuple[gr.Blocks, dict]:
 
     with gr.Blocks(title=settings.get("app_name", "Qwen3 TTS Studio"), css=css, theme=theme) as demo:
         gr.HTML(app_header_html())
-        gr.HTML(
-            tips_card_html(
-                "Notas importantes",
-                [
-                    "VoiceDesign disena una voz desde texto descriptivo.",
-                    "Base permite clonacion desde audio.",
-                    "El modo hibrido combina ambos enfoques.",
-                    "En CPU la primera carga y la sintesis pueden tardar bastante.",
-                    "Audios de referencia limpios suelen dar mejores resultados.",
-                ],
-            ),
-            elem_classes=["top-note-strip"],
-        )
 
         with gr.Tabs(elem_classes=["studio-tabs"]):
             build_generate_tab(tts_service)
             build_clone_tab(tts_service)
             build_hybrid_tab(tts_service)
+            build_voices_tab(tts_service)
             build_history_tab(tts_service)
             build_settings_tab(tts_service)
-
-        gr.HTML(footer_notes_html())
 
     return demo, settings
 

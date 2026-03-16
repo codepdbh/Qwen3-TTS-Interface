@@ -49,3 +49,7 @@ def validate_reference_text(reference_text: str | None) -> str | None:
         raise ValidationError("La transcripcion de referencia es demasiado larga.")
     return clean
 
+
+def validate_voice_name(name: str) -> str:
+    return validate_text(name, field_name="nombre de la voz", min_length=2, max_length=80)
+

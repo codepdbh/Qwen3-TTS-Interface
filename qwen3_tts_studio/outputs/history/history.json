@@ -1,2 +1,47 @@
-[]
-
+[
+  {
+    "id": "facbaadc7969",
+    "fecha_hora": "2026-03-16 11:44:03",
+    "modo": "clone",
+    "texto": "hola bro, el padre alex me dijo que tengo que eliminar todos los items, entonces quiero empezar por el de mariela jajaja",
+    "idioma": "Spanish",
+    "descripcion_de_voz": null,
+    "archivo_referencia": "C:\\Users\\Sistemas\\Documents\\Qwen3-TTS-Interface\\qwen3_tts_studio\\outputs\\temp\\ref_20260316_114211_whatsapp_ptt_2026-03-11_.ogg",
+    "archivo_salida_generado": "C:\\Users\\Sistemas\\Documents\\Qwen3-TTS-Interface\\qwen3_tts_studio\\outputs\\generated\\clone_20260316_114403_hola_bro_el_padre_alex.wav",
+    "archivo_semilla": null,
+    "duracion_aproximada": 8.24,
+    "modelo_usado": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+    "estado": "ok",
+    "mensaje_error": null
+  },
+  {
+    "id": "f3656198b8b5",
+    "fecha_hora": "2026-03-16 11:39:55",
+    "modo": "clone",
+    "texto": "hola bro, el padre alex me dijo que tengo que eliminar todos los items, entonces quiero empezar por el de mariela jajaja",
+    "idioma": "Spanish",
+    "descripcion_de_voz": null,
+    "archivo_referencia": "C:\\Users\\Sistemas\\Documents\\Qwen3-TTS-Interface\\qwen3_tts_studio\\outputs\\temp\\ref_20260316_113833_whatsapp_ptt_2026-03-03_.ogg",
+    "archivo_salida_generado": "C:\\Users\\Sistemas\\Documents\\Qwen3-TTS-Interface\\qwen3_tts_studio\\outputs\\generated\\clone_20260316_113955_hola_bro_el_padre_alex.wav",
+    "archivo_semilla": null,
+    "duracion_aproximada": 7.92,
+    "modelo_usado": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+    "estado": "ok",
+    "mensaje_error": null
+  },
+  {
+    "id": "5afec5db0518",
+    "fecha_hora": "2026-03-16 11:33:12",
+    "modo": "clone",
+    "texto": "Hola bro, como estás? todo bien?",
+    "idioma": "Spanish",
+    "descripcion_de_voz": null,
+    "archivo_referencia": "C:\\Users\\Sistemas\\Documents\\Qwen3-TTS-Interface\\qwen3_tts_studio\\outputs\\temp\\ref_20260316_113201_whatsapp_ptt_2026-03-03_.ogg",
+    "archivo_salida_generado": "C:\\Users\\Sistemas\\Documents\\Qwen3-TTS-Interface\\qwen3_tts_studio\\outputs\\generated\\clone_20260316_113312_hola_bro_como_estas_to.wav",
+    "archivo_semilla": null,
+    "duracion_aproximada": 2.64,
+    "modelo_usado": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+    "estado": "ok",
+    "mensaje_error": null
+  }
+]

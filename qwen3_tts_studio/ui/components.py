@@ -1,3 +1,4 @@
+import html
 from typing import Any
 
 
@@ -7,77 +8,148 @@ def info_box_markdown(title: str, body: str) -> str:
 
 def app_header_html() -> str:
     return """
-<section class="hero-banner">
-  <div class="hero-copy">
-    <div class="hero-kicker">Qwen3 TTS Studio</div>
-    <h1>Estudio local para disenar, clonar y refinar voces con Qwen3-TTS</h1>
-    <p>Interfaz en espanol, pensada para Windows 10/11 y ejecucion en CPU. La primera carga puede tardar, pero despues puedes reutilizar modelos y audios generados desde una sola app.</p>
-    <div class="hero-chips">
+<section class="app-hero">
+  <div class="app-hero-copy">
+    <div class="app-eyebrow">Qwen3 TTS Studio</div>
+    <h1>Disena, clona y organiza voces desde una sola interfaz</h1>
+    <p>Aplicacion local en espanol para Windows 10/11. Pensada para trabajo en CPU, con carga diferida de modelos, historial local y biblioteca de voces reutilizables.</p>
+    <div class="app-pill-row">
       <span>VoiceDesign</span>
       <span>Base</span>
       <span>Flujo hibrido</span>
-      <span>Historial local</span>
+      <span>Voces guardadas</span>
     </div>
   </div>
-  <div class="hero-grid">
-    <div class="hero-card">
-      <div class="hero-card-title">Diseno de voz</div>
-      <p>Crea una identidad vocal a partir de una descripcion textual.</p>
+  <div class="app-hero-side">
+    <div class="hero-side-card">
+      <div class="hero-side-kicker">Como se usa</div>
+      <h3>Un flujo claro</h3>
+      <p>Elige un modo, completa los pasos guiados y revisa el resultado en el panel lateral. Las acciones secundarias quedan agrupadas para no estorbar.</p>
     </div>
-    <div class="hero-card">
-      <div class="hero-card-title">Clonacion</div>
-      <p>Usa un audio de referencia y, si quieres, su transcripcion.</p>
-    </div>
-    <div class="hero-card">
-      <div class="hero-card-title">CPU primero</div>
-      <p>Carga diferida de modelos y uso local sin depender de GPU NVIDIA.</p>
+    <div class="hero-side-grid">
+      <div class="hero-metric">
+        <strong>3</strong>
+        <span>modos de sintesis</span>
+      </div>
+      <div class="hero-metric">
+        <strong>CPU</strong>
+        <span>sin GPU NVIDIA</span>
+      </div>
+      <div class="hero-metric">
+        <strong>Local</strong>
+        <span>historial y voces</span>
+      </div>
+      <div class="hero-metric">
+        <strong>WAV</strong>
+        <span>salida descargable</span>
+      </div>
     </div>
   </div>
+</section>
+<section class="mode-strip">
+  <article class="mode-tile">
+    <div class="mode-tile-label">Diseno de voz</div>
+    <p>Crea una identidad vocal desde una descripcion textual.</p>
+  </article>
+  <article class="mode-tile">
+    <div class="mode-tile-label">Clonacion</div>
+    <p>Usa un audio nuevo o una voz guardada como referencia.</p>
+  </article>
+  <article class="mode-tile">
+    <div class="mode-tile-label">Diseno + clonacion</div>
+    <p>Genera una semilla y conviertela en una voz reutilizable.</p>
+  </article>
+  <article class="mode-tile mode-tile-warning">
+    <div class="mode-tile-label">Rendimiento</div>
+    <p>En CPU la primera carga y algunas sintesis pueden tardar bastante.</p>
+  </article>
 </section>
 """
 
 
 def tab_header_html(kicker: str, title: str, description: str) -> str:
     return f"""
-<section class="tab-intro-card">
-  <div class="tab-intro-kicker">{kicker}</div>
-  <h2>{title}</h2>
-  <p>{description}</p>
+<section class="tab-banner">
+  <div class="tab-banner-kicker">{html.escape(kicker)}</div>
+  <div class="tab-banner-content">
+    <h2>{html.escape(title)}</h2>
+    <p>{html.escape(description)}</p>
+  </div>
 </section>
 """
 
 
-def tips_card_html(title: str, items: list[str]) -> str:
-    list_items = "".join(f"<li>{item}</li>" for item in items)
+def step_header_html(number: int, title: str, description: str) -> str:
     return f"""
-<section class="tips-card">
-  <div class="tips-card-title">{title}</div>
+<div class="step-header">
+  <div class="step-badge">{number}</div>
+  <div class="step-copy">
+    <div class="step-title">{html.escape(title)}</div>
+    <div class="step-description">{html.escape(description)}</div>
+  </div>
+</div>
+"""
+
+
+def tips_card_html(title: str, items: list[str], tone: str = "default") -> str:
+    list_items = "".join(f"<li>{html.escape(item)}</li>" for item in items)
+    return f"""
+<section class="tips-card tips-card-{html.escape(tone)}">
+  <div class="tips-card-title">{html.escape(title)}</div>
   <ul>{list_items}</ul>
 </section>
 """
 
 
-def footer_notes_html() -> str:
-    return """
-<section class="footer-notes">
-  <div class="footer-note">
-    <div class="footer-note-title">VoiceDesign</div>
-    <p>Disena una voz desde una descripcion textual.</p>
-  </div>
-  <div class="footer-note">
-    <div class="footer-note-title">Base</div>
-    <p>Clona una voz a partir de un audio limpio de referencia.</p>
-  </div>
-  <div class="footer-note">
-    <div class="footer-note-title">Modo hibrido</div>
-    <p>Genera una voz semilla y la convierte en prompt reutilizable.</p>
-  </div>
-  <div class="footer-note">
-    <div class="footer-note-title">CPU</div>
-    <p>La generacion puede tardar bastante; los modelos se cargan solo cuando hacen falta.</p>
-  </div>
+def text_card_html(title: str, body: str, tone: str = "default") -> str:
+    return f"""
+<section class="text-card text-card-{html.escape(tone)}">
+  <div class="text-card-title">{html.escape(title)}</div>
+  <p>{html.escape(body)}</p>
 </section>
 """
+
+
+def render_settings_snapshot_html(settings: dict[str, Any]) -> str:
+    return _kv_card_html(
+        "Configuracion activa",
+        [
+            ("Aplicacion", settings.get("app_name", "")),
+            ("Host", settings.get("host", "")),
+            ("Puerto", settings.get("port", "")),
+            ("Dispositivo", settings.get("device", "")),
+            ("Compartir", "si" if settings.get("share") else "no"),
+            ("Debug", "si" if settings.get("debug") else "no"),
+            ("Idioma por defecto", settings.get("default_language", "Spanish")),
+        ],
+    )
+
+
+def render_storage_snapshot_html(settings: dict[str, Any]) -> str:
+    return _kv_card_html(
+        "Rutas de trabajo",
+        [
+            ("Generados", settings.get("output_dir", "")),
+            ("Historial", settings.get("history_file", "")),
+            ("Temporales", settings.get("temp_dir", "")),
+            ("Biblioteca de voces", settings.get("voices_dir", "")),
+            ("Archivo de voces", settings.get("voices_file", "")),
+            ("Modelos locales", settings.get("models_dir", "")),
+        ],
+    )
+
+
+def render_runtime_snapshot_html(status: dict[str, Any]) -> str:
+    return _kv_card_html(
+        "Estado de ejecucion",
+        [
+            ("VoiceDesign descargado", "si" if status.get("voice_design_downloaded") else "no"),
+            ("VoiceDesign cargado", "si" if status.get("voice_design_loaded") else "no"),
+            ("Base descargado", "si" if status.get("base_downloaded") else "no"),
+            ("Base cargado", "si" if status.get("base_loaded") else "no"),
+            ("Descarga bajo demanda", "si" if status.get("download_models_on_demand") else "no"),
+        ],
+    )
 
 
 def build_history_selector_label(record: dict[str, Any]) -> str:
@@ -85,6 +157,16 @@ def build_history_selector_label(record: dict[str, Any]) -> str:
 
 
 def parse_history_selector_label(value: str | None) -> str | None:
+    if not value:
+        return None
+    return value.split(" | ", 1)[0].strip() or None
+
+
+def build_voice_selector_label(record: dict[str, Any]) -> str:
+    return f"{record.get('id', '')} | {record.get('name', '')} | {record.get('source_mode', '')}"
+
+
+def parse_voice_selector_label(value: str | None) -> str | None:
     if not value:
         return None
     return value.split(" | ", 1)[0].strip() or None
@@ -114,6 +196,27 @@ def history_detail_markdown(record: dict[str, Any] | None) -> str:
         lines.append(f"- Error: `{record.get('mensaje_error')}`")
     lines.append("")
     lines.append(record.get("texto", ""))
+    return "\n".join(lines)
+
+
+def saved_voice_detail_markdown(record: dict[str, Any] | None) -> str:
+    if not record:
+        return "Selecciona una voz guardada para ver su detalle."
+
+    lines = [
+        "### Voz guardada",
+        f"- ID: `{record.get('id', '')}`",
+        f"- Nombre: `{record.get('name', '')}`",
+        f"- Creada: `{record.get('created_at', '')}`",
+        f"- Origen: `{record.get('source_mode', '')}`",
+        f"- Idioma: `{record.get('language', '') or 'N/D'}`",
+        f"- Audio: `{record.get('audio_path', '')}`",
+        f"- Tiene transcripcion: `{'si' if record.get('reference_text') else 'no'}`",
+    ]
+    if record.get("reference_text"):
+        lines.append(f"- Transcripcion: `{record.get('reference_text')}`")
+    if record.get("voice_prompt"):
+        lines.append(f"- Prompt de voz: `{record.get('voice_prompt')}`")
     return "\n".join(lines)
 
 
@@ -147,40 +250,60 @@ def render_model_progress_html(
     ]
 
     return f"""
-<div class="model-progress-panel">
-  <div class="model-progress-header">
+<section class="progress-shell">
+  <div class="progress-shell-top">
     <div>
-      <div class="model-progress-title">Estado de modelos locales</div>
-      <div class="model-progress-subtitle">{downloaded_count}/2 modelos descargados</div>
+      <div class="progress-shell-title">Estado de modelos locales</div>
+      <div class="progress-shell-subtitle">{downloaded_count}/2 modelos disponibles</div>
     </div>
-    <div class="model-progress-badge">{percent}%</div>
+    <div class="progress-pill">{percent}%</div>
   </div>
-  <div class="model-progress-track">
-    <div class="model-progress-fill" style="width: {max(0, min(percent, 100))}%;"></div>
+  <div class="progress-track">
+    <div class="progress-fill" style="width: {max(0, min(percent, 100))}%;"></div>
   </div>
-  <div class="model-progress-note"><strong>Actividad:</strong> {active_text}</div>
-  <div class="model-progress-grid">
+  <div class="progress-activity"><strong>Actividad:</strong> {html.escape(active_text)}</div>
+  <div class="progress-grid">
     {''.join(cards)}
   </div>
-  <div class="model-progress-footnote">{note_text}</div>
-</div>
+  <div class="progress-note">{html.escape(note_text)}</div>
+</section>
 """
 
 
 def _render_model_card(title: str, downloaded: bool, loaded: bool, path: str) -> str:
     downloaded_text = "Descargado" if downloaded else "Pendiente"
-    loaded_text = "Cargado en memoria" if loaded else "No cargado"
+    loaded_text = "Cargado" if loaded else "No cargado"
     badge_class = "ok" if downloaded else "pending"
     load_class = "ok" if loaded else "pending"
     return f"""
-<div class="model-status-card">
-  <div class="model-status-row">
-    <span class="model-status-name">{title}</span>
-    <span class="model-status-chip {badge_class}">{downloaded_text}</span>
+<article class="progress-card">
+  <div class="progress-card-top">
+    <span class="progress-card-name">{html.escape(title)}</span>
+    <span class="status-chip status-chip-{badge_class}">{downloaded_text}</span>
   </div>
-  <div class="model-status-subrow">
-    <span class="model-status-chip small {load_class}">{loaded_text}</span>
+  <div class="progress-card-mid">
+    <span class="status-chip status-chip-{load_class}">{loaded_text}</span>
   </div>
-  <div class="model-status-path">{path}</div>
+  <div class="progress-card-path">{html.escape(path)}</div>
+</article>
+"""
+
+
+def _kv_card_html(title: str, rows: list[tuple[str, Any]]) -> str:
+    items = "".join(
+        f"""
+<div class="kv-row">
+  <div class="kv-key">{html.escape(str(key))}</div>
+  <div class="kv-value">{html.escape(str(value))}</div>
 </div>
+"""
+        for key, value in rows
+    )
+    return f"""
+<section class="kv-card">
+  <div class="kv-card-title">{html.escape(title)}</div>
+  <div class="kv-grid">
+    {items}
+  </div>
+</section>
 """

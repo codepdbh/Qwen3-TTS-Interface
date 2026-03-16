@@ -6,7 +6,9 @@ from ui.components import (
     build_history_selector_label,
     history_detail_markdown,
     parse_history_selector_label,
+    step_header_html,
     tab_header_html,
+    text_card_html,
     tips_card_html,
 )
 
@@ -17,15 +19,16 @@ def build_history_tab(tts_service) -> None:
             tab_header_html(
                 "Seguimiento local",
                 "Consulta tus generaciones anteriores",
-                "Explora resultados guardados, reproduce audios existentes y limpia el historial local cuando necesites dejar el proyecto ordenado.",
+                "Esta pestana te permite revisar resultados previos, reproducirlos si siguen existiendo y limpiar el historial cuando quieras organizar el proyecto.",
             )
         )
 
         records = tts_service.get_history_records()
         selector_choices = [build_history_selector_label(record) for record in records]
 
-        with gr.Row(elem_classes=["studio-workspace"]):
-            with gr.Column(scale=2, elem_classes=["studio-panel", "studio-panel-main"]):
+        with gr.Row(elem_classes=["workspace-grid"]):
+            with gr.Column(scale=7, elem_classes=["surface-card", "surface-main"]):
+                gr.HTML(step_header_html(1, "Explora los registros", "La tabla muestra fecha, modo, resumen del texto, archivo y estado del proceso."))
                 history_table = gr.Dataframe(
                     headers=["ID", "Fecha", "Modo", "Texto", "Archivo generado", "Estado"],
                     value=tts_service.get_history_rows(),
@@ -34,6 +37,7 @@ def build_history_tab(tts_service) -> None:
                     label="Registros",
                 )
 
+                gr.HTML(step_header_html(2, "Selecciona una generacion", "Al seleccionar un registro, veras su detalle y una previsualizacion en el panel derecho."))
                 with gr.Row():
                     selector = gr.Dropdown(
                         choices=selector_choices,
@@ -45,14 +49,21 @@ def build_history_tab(tts_service) -> None:
                     clear_button = gr.Button("Limpiar historial", variant="stop")
                 status_output = gr.Textbox(label="Estado", interactive=False)
 
-            with gr.Column(scale=1, elem_classes=["studio-panel", "studio-panel-side"]):
+            with gr.Column(scale=5, elem_classes=["surface-card", "surface-side"]):
+                gr.HTML(
+                    text_card_html(
+                        "Que puedes hacer aqui",
+                        "Puedes reproducir audios previos si el archivo aun existe, borrar elementos puntuales o vaciar por completo el historial sin tocar necesariamente los WAV generados.",
+                        tone="accent",
+                    )
+                )
                 gr.HTML(
                     tips_card_html(
-                        "Sugerencias",
+                        "Aclaraciones utiles",
                         [
-                            "La tabla resume fecha, modo, texto y estado.",
-                            "Si el archivo aun existe, puedes reproducirlo desde aqui.",
-                            "Limpiar historial no borra automaticamente los WAV ya generados.",
+                            "Limpiar historial no borra automaticamente todos los audios generados.",
+                            "Si un archivo fue movido o eliminado, la vista previa ya no podra cargarlo.",
+                            "El panel lateral muestra detalle del registro seleccionado.",
                         ],
                     )
                 )

@@ -10,6 +10,7 @@ from core.constants import APP_DIR, DEFAULT_SETTINGS, SETTINGS_PATH
 from core.device import get_default_device
 from core.history_manager import HistoryManager
 from core.model_manager import ModelManager
+from core.voice_library import VoiceLibraryManager
 from services.clone_service import CloneService
 from services.design_service import DesignService
 from services.hybrid_service import HybridService
@@ -21,6 +22,7 @@ class TTSService:
         self.settings = self._load_settings()
         self.model_manager = ModelManager(self.settings)
         self.history_manager = HistoryManager(self.settings["history_file"])
+        self.voice_library = VoiceLibraryManager(self.settings["voices_file"], self.settings["voices_dir"])
         self.design_service = DesignService(self.model_manager, self.settings)
         self.clone_service = CloneService(self.model_manager, self.settings)
         self.hybrid_service = HybridService(self.model_manager, self.settings)
@@ -97,6 +99,48 @@ class TTSService:
             )
             return self._error_response(exc)
 
+    def run_clone_with_saved_voice(self, text: str, language: str, voice_id: str) -> dict[str, Any]:
+        voice = self.voice_library.get_voice(voice_id)
+        if not voice:
+            return self._error_response(ValueError("La voz guardada seleccionada ya no existe."))
+
+        try:
+            result = self.clone_service.generate_voice_clone(
+                text=text,
+                language=language,
+                reference_audio_path=voice["audio_path"],
+                reference_text=voice.get("reference_text"),
+            )
+            self._add_history_record(
+                mode="clone",
+                text=text,
+                language=language,
+                voice_description=None,
+                reference_file=voice.get("audio_path"),
+                result=result,
+                status="ok",
+            )
+            return {
+                "ok": True,
+                "status": f"Proceso finalizado usando la voz guardada '{voice.get('name', 'sin nombre')}'.",
+                "output_path": result["output_path"],
+                "download_path": result["output_path"],
+                "details": self._success_message(result),
+            }
+        except Exception as exc:
+            self._log_exception("clone_saved_voice", exc)
+            self._add_history_record(
+                mode="clone",
+                text=text,
+                language=language,
+                voice_description=None,
+                reference_file=voice.get("audio_path"),
+                result={},
+                status="error",
+                error_message=str(exc),
+            )
+            return self._error_response(exc)
+
     def run_hybrid(
         self,
         text: str,
@@ -164,6 +208,7 @@ class TTSService:
         self.settings = self._load_settings()
         self.model_manager.update_settings(self.settings)
         self.history_manager.update_history_file(self.settings["history_file"])
+        self.voice_library.update_paths(self.settings["voices_file"], self.settings["voices_dir"])
         self.design_service.update_settings(self.settings)
         self.clone_service.update_settings(self.settings)
         self.hybrid_service.update_settings(self.settings)
@@ -178,6 +223,9 @@ class TTSService:
             "output_dir": self.settings["output_dir"],
             "history_file": self.settings["history_file"],
             "temp_dir": self.settings["temp_dir"],
+            "default_language": self.settings["default_language"],
+            "voices_dir": self.settings["voices_dir"],
+            "voices_file": self.settings["voices_file"],
             "models_dir": self.settings["models_dir"],
             "voice_design_local_dir": self.settings["voice_design_local_dir"],
             "base_local_dir": self.settings["base_local_dir"],
@@ -195,15 +243,21 @@ class TTSService:
         settings["output_dir"] = str(self._resolve_project_path(settings["output_dir"]))
         settings["history_file"] = str(self._resolve_project_path(settings["history_file"]))
         settings["temp_dir"] = str(self._resolve_project_path(settings["temp_dir"]))
+        settings["voices_dir"] = str(self._resolve_project_path(settings["voices_dir"]))
+        settings["voices_file"] = str(self._resolve_project_path(settings["voices_file"]))
         settings["models_dir"] = str(self._resolve_project_path(settings["models_dir"]))
         settings["voice_design_local_dir"] = str(self._resolve_project_path(settings["voice_design_local_dir"]))
         settings["base_local_dir"] = str(self._resolve_project_path(settings["base_local_dir"]))
         ensure_directory(settings["output_dir"])
         ensure_directory(Path(settings["history_file"]).parent)
         ensure_directory(settings["temp_dir"])
+        ensure_directory(settings["voices_dir"])
+        ensure_directory(Path(settings["voices_file"]).parent)
         ensure_directory(settings["models_dir"])
         ensure_directory(settings["voice_design_local_dir"])
         ensure_directory(settings["base_local_dir"])
+        if not Path(settings["voices_file"]).exists():
+            Path(settings["voices_file"]).write_text("[]", encoding="utf-8")
         return settings
 
     def download_all_models(self, force_download: bool = False) -> tuple[dict[str, Any], str]:
@@ -221,6 +275,37 @@ class TTSService:
     def download_base_model(self, force_download: bool = False) -> tuple[dict[str, Any], str]:
         path = self.model_manager.download_base_model(force_download=force_download)
         return self.get_model_status(), f"Base listo en: {path}"
+
+    def save_voice_profile(
+        self,
+        name: str,
+        source_audio_path: str,
+        reference_text: str | None = None,
+        language: str | None = None,
+        source_mode: str = "reference_audio",
+        voice_prompt: str | None = None,
+    ) -> tuple[dict[str, Any], str]:
+        record = self.voice_library.add_voice(
+            name=name,
+            source_audio_path=source_audio_path,
+            reference_text=reference_text,
+            language=language,
+            source_mode=source_mode,
+            voice_prompt=voice_prompt,
+        )
+        return record, f"Voz guardada correctamente como '{record['name']}'."
+
+    def list_saved_voices(self) -> list[dict[str, Any]]:
+        return self.voice_library.load_voices()
+
+    def get_saved_voice_rows(self) -> list[list[str]]:
+        return self.voice_library.get_voice_rows()
+
+    def get_saved_voice(self, voice_id: str) -> dict[str, Any] | None:
+        return self.voice_library.get_voice(voice_id)
+
+    def delete_saved_voice(self, voice_id: str) -> bool:
+        return self.voice_library.delete_voice(voice_id)
 
     def _resolve_project_path(self, raw_path: str) -> Path:
         path = Path(raw_path)
