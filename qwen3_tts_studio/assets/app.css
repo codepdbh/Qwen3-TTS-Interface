@@ -34,6 +34,18 @@ body {
   padding: 26px 24px 40px !important;
   background: transparent !important;
   color: var(--ink);
+  --body-background-fill: transparent;
+  --background-fill-primary: transparent;
+  --background-fill-secondary: var(--panel);
+  --block-background-fill: var(--panel);
+  --block-border-color: var(--line);
+  --block-label-background-fill: transparent;
+  --block-label-text-color: var(--ink);
+  --block-title-text-color: var(--ink);
+  --block-info-text-color: var(--ink-soft);
+  --input-background-fill: #fffdfa;
+  --input-border-color: var(--line);
+  --table-border-color: var(--line);
 }
 
 .gradio-container * {
@@ -61,6 +73,9 @@ body {
 .gradio-container .gradio-textbox,
 .gradio-container .gradio-dropdown {
   border-radius: 20px !important;
+  background: var(--panel) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
 }
 
 .gradio-container textarea,
@@ -71,6 +86,34 @@ body {
   color: var(--ink) !important;
   border: 1px solid var(--line) !important;
   box-shadow: none !important;
+}
+
+.gradio-container .label-wrap,
+.gradio-container .block-label,
+.gradio-container .block-title,
+.gradio-container .block-info,
+.gradio-container [data-testid="block-label"],
+.gradio-container [data-testid="block-title"],
+.gradio-container [data-testid="block-info"] {
+  background: transparent !important;
+  color: var(--ink) !important;
+  opacity: 1 !important;
+}
+
+.gradio-container .gradio-dataframe table,
+.gradio-container .gradio-audio,
+.gradio-container .gradio-file,
+.gradio-container [data-testid="accordion"],
+.gradio-container .accordion {
+  background: var(--panel) !important;
+  color: var(--ink) !important;
+}
+
+.gradio-container .accordion button,
+.gradio-container [data-testid="accordion"] button {
+  background: var(--panel-alt) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
 }
 
 .gradio-container textarea::placeholder,
@@ -533,16 +576,24 @@ body {
 .gradio-container table {
   border-radius: 16px;
   overflow: hidden;
+  border: 1px solid var(--line) !important;
 }
 
-.gradio-container th {
+.gradio-container th,
+.gradio-container thead th,
+.gradio-container .gradio-dataframe th {
   background: #f3e9dc !important;
   color: var(--ink) !important;
+  border-color: var(--line) !important;
+  font-weight: 800 !important;
 }
 
-.gradio-container td {
+.gradio-container td,
+.gradio-container tbody td,
+.gradio-container .gradio-dataframe td {
   background: #fffdf9 !important;
   color: var(--ink-soft) !important;
+  border-color: var(--line) !important;
 }
 
 @media (max-width: 1180px) {
