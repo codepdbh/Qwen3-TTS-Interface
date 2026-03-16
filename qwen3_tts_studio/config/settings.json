@@ -1,0 +1,18 @@
+{
+  "app_name": "Qwen3 TTS Studio",
+  "host": "127.0.0.1",
+  "port": 7860,
+  "device": "cpu",
+  "output_dir": "outputs/generated",
+  "history_file": "outputs/history/history.json",
+  "temp_dir": "outputs/temp",
+  "models_dir": "models",
+  "voice_design_local_dir": "models/voice_design",
+  "base_local_dir": "models/base",
+  "download_models_on_demand": true,
+  "default_language": "Spanish",
+  "voice_design_model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+  "base_model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "share": false,
+  "debug": true
+}

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+outputs/temp/*
+outputs/generated/*
+outputs/history/*
+!outputs/history/history.json
+.gradio/
+.cache/
+*.log
+models/

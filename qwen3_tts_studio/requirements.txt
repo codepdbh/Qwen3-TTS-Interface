@@ -1,0 +1,7 @@
+gradio
+soundfile
+numpy
+torch
+qwen-tts
+huggingface_hub
+
