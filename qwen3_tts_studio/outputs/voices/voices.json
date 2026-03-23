@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "id": "0fc4a896dac4",
+    "name": "P Alex",
+    "created_at": "2026-03-16 12:23:56",
+    "audio_path": "C:\\Users\\Sistemas\\Documents\\Qwen3-TTS-Interface\\qwen3_tts_studio\\outputs\\voices\\voice_20260316_122356_p_alex.ogg",
+    "reference_text": "hola buenas tardes pero es que eso tienen que coordinar los directores pues, eso ya no me esté a mi, la parte académica, son los directores que tienen que ver eso.",
+    "language": "Spanish",
+    "source_mode": "reference_audio",
+    "voice_prompt": null
+  },
+  {
+    "id": "66abbb678600",
+    "name": "VLADI",
+    "created_at": "2026-03-16 12:17:23",
+    "audio_path": "C:\\Users\\Sistemas\\Documents\\Qwen3-TTS-Interface\\qwen3_tts_studio\\outputs\\voices\\voice_20260316_121723_vladi.ogg",
+    "reference_text": "Ah ah debes ser que tiene tres hermanas pues debes ser otra hermana pensé que me estabas hablando de la Ale de la Ale ¿Hállas conocido? Porque la Ale era bonita bonita era más bajito era alta y simpática bueno no _ acuerdo muy bien en su rostro ¿Sabes? Soy voludo para recordar rostros pero sí te podría decir que ni de la ni de recordad recuerdo su rostro pues camino por la calle y no me acuerdo cara y por eso te ando por eso cada vez te decía creo que le viste creo que le viste creo que le viste creo que le viste creo que le viste porque no me acuerdo y de la porque es otra hermana la que habló conmigo eh si es más más jovencita es su menor ahora no sé si es de la a la que nos estás hablando",
+    "language": "Spanish",
+    "source_mode": "reference_audio",
+    "voice_prompt": null
+  }
+]
